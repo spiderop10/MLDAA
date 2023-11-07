@@ -1,0 +1,193 @@
+dynamic:
+
+#include<stdio.h>
+#include<math.h>
+int max(int a, int b) { return (a > b)? a : b; }
+void dynamic(int n, int m, int p[10], int w[10]) 
+{
+	int v[n+1][m+1]; //main matrix
+	int xi[10]={0}; //total+profit
+	int i,j,k;
+	for(i=0;i<=n;i++)//for row
+	{
+		for(j=0;j<=m;j++)//for column
+		{
+			if(i==0 || j==0) //0 get allocated
+			{
+				v[i][j] = 0;
+			}
+			else if(w[i-1]<=j)
+			{
+				v[i][j] = max(v[i-1][j],v[i-1][j-w[i-1]]+p[i-1]);
+			}
+			else
+			{
+				v[i][j] = v[i-1][j];
+			}
+		}
+	}
+
+	printf("\nThe vector table is using Assign Value is:\n"); 
+	for(i=0;i<=n;i++)
+	{
+		for(j=0;j<=m;j++)
+		{
+		printf("%d\t", v[i][j]);
+		}
+		printf("\n");
+ 	}
+	i=n;
+	k=m;
+	while(i>0 && k>0) //to find the resultant vector (sequence of selected objects)
+	{
+		if(v[i][k]!=v[i-1][k])
+		{
+			xi[i]=1;
+			k=k-w[i-1];
+			i=i-1;
+		}
+		else
+		{
+			i--;
+		}
+	}
+	printf("\nThe resultant vector is : ");
+	for(i=1;i<=n;i++)
+	{
+		printf("%d ",xi[i]);
+	}
+	printf(")\n");
+	printf("\nThe maximum profit of the given objects by calculation is: %d\n", v[n][m]);
+
+}
+int main()
+{
+		int i;
+		int p[10]={0}; //profit of elements
+		int w[10]={0}; //weight of elements
+		int n,m; //n-no of elements & m-capacity
+		printf("Please Enter Number of Elements:"); 
+		scanf("%d",&n);
+		printf("Please Enter Capacity of Container:"); 
+		scanf("%d",&m);
+		printf("Please enter profit and weight of the elements\n");
+		
+		for( i=0;i<n;i++)
+		{
+			scanf("%d %d", &p[i], &w[i]);
+		}
+		dynamic(n,m,p,w); 
+		return 0;
+}
+
+Greddy:
+
+#include<iostream>
+using namespace std;
+
+struct kn
+{
+    int name;
+    float wt;
+    float pr;
+    float ratio;
+}
+
+void sort(kn s[], int n)
+{
+    kn temp;
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<n-1; j++)
+        {
+            if(s[j].ratio < s[j+1].ratio)
+            {
+                temp = s[j];
+                s[j] = s[j+1];
+                s[j+1] = temp;
+            }
+        }
+    }
+}
+
+void greedy(struct kn k[], int n, int tot)
+{
+    float temp;
+    temp=tot;
+    float profit=0;
+    float ans[n]={0};
+
+    //cout<<"\nTemp value"<<temp<<endl;;
+
+    for(int i=0; i<n && temp>0; i++)
+    {
+        if(temp >= k[i].wt)
+        {
+            temp=temp-k[i].wt;
+            profit=profit+k[i].pr;
+            ans[i]=1;
+        }
+        else if(temp < k[i].wt)
+        {
+            ans[i]=temp/k[i].wt;
+            profit=profit+temp*k[i].ratio;
+    
+            break;
+        }
+    }
+
+    
+
+    cout<<"\n\nTotal Profit is: "<<profit<<endl;
+
+    for(int i=0; i<n; i++)
+    {
+        cout<<k[i].name<<"\t";
+    }
+    cout<<"\n";
+    for(int i=0; i<n; i++)
+    {
+        cout<<ans[i]<<"\t";
+    }
+    
+}
+
+int main()
+{
+    int n;
+    int tot;
+
+    cout<<"Enter total no. of items: ";
+    cin>>n;
+
+    cout<<"Total capacity of bag: ";
+    cin>>tot;
+
+    kn k[20];
+
+    for(int i=0; i<n; i++)
+    {
+        cout<<"Enter name of the object: ";
+        cin>>k[i].name;
+        
+        cout<<"Enter object weight: ";
+        cin>>k[i].wt;
+
+        cout<<"Enter object profit: ";
+        cin>>k[i].pr;
+
+        k[i].ratio=k[i].pr/k[i].wt;
+    }
+
+    sort(k,n);
+
+    cout<<"N"<<"\t"<<"WT"<<"\t"<<"PR"<<"\t"<<"Ratio"<<endl;
+    for(int i=0; i<n; i++)
+    {
+        cout<<k[i].name<<"\t"<<k[i].wt<<"\t"<<k[i].pr<<"\t"<<k[i].ratio<<"\n";
+    }
+
+    greedy(k,n,tot);
+
+    return 0;
+}

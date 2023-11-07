@@ -1,0 +1,109 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+pip install --upgrade scikit-learn
+pip install --upgrade threadpoolctl
+
+df = pd.read_csv('Mall_Customers.csv')
+df
+
+x= df.iloc[:,3:]
+x
+
+plt.title('Unclustered Data')
+plt.xlabel('Annual Income')
+plt.ylabel('Spending Score')
+plt.scatter(x['Annual Income (k$)'],x['Spending Score (1-100)'])
+
+from sklearn.cluster import KMeans ,AgglomerativeClustering
+km = KMeans(n_clusters=3,n_init=10)
+labels = km.fit_predict(x)
+km.inertia_
+
+sse = []
+for k in range(1,16):
+    km = KMeans(n_clusters=k,n_init=k)
+    km.fit_predict(x)
+    sse.append(km.inertia_)
+
+sse
+
+plt.title('Elbow Method')
+plt.xlabel('Value of K')
+plt.ylabel('SSE')
+plt.grid()
+plt.xticks(range(1,16))
+plt.plot(range(1,16),sse,marker='.',color='blue')
+
+from sklearn.metrics import silhouette_score
+silh= []
+for k in range(2,16):
+    km = KMeans(n_clusters=k,n_init=k)
+    labels = km.fit_predict(x)
+    score= silhouette_score(x, labels)
+    silh.append(score)
+silh
+
+plt.title('silh Method')
+plt.xlabel('Value of K')
+plt.ylabel('silh score')
+plt.grid()
+plt.xticks(range(2,16))
+plt.bar(range(2,16),silh,color='blue')
+
+labels
+
+km.cluster_centers_
+cent=km.cluster_centers_
+
+plt.figure(figsize=(16,9))
+plt.subplot(1,2,1)
+plt.title('Unclustered Data')
+plt.xlabel('Annual Income')
+plt.ylabel('Spending Score')
+plt.scatter(x['Annual Income (k$)'], x['Spending Score (1-100)'])
+
+
+plt.subplot(1,2,2)
+plt.title('clustered Data')
+plt.xlabel('Annual Income')
+plt.ylabel('Spending Score')
+plt.scatter(x['Annual Income (k$)'], x['Spending Score (1-100)'],c=labels)
+
+plt.scatter(cent[:,0] , cent[:,1], s=100 ,color='k')
+
+agl = AgglomerativeClustering(n_clusters=5)
+alabels= agl.fit_predict(x)
+alabels
+
+plt.figure(figsize=(16,9))
+plt.subplot(1,2,1)
+plt.title('agglonerative')
+plt.xlabel('Annual Income')
+plt.ylabel('Spending Score')
+plt.scatter(x['Annual Income (k$)'], x['Spending Score (1-100)'],c=alabels)
+
+
+plt.subplot(1,2,2)
+plt.title('clustered Data')
+plt.xlabel('Annual Income')
+plt.ylabel('Spending Score')
+plt.scatter(x['Annual Income (k$)'], x['Spending Score (1-100)'],c=labels)
+
+plt.scatter(cent[:,0] , cent[:,1], s=100 ,color='k')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

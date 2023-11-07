@@ -1,0 +1,13 @@
+pip install pandas
+pip install numpy
+pip install matplotlib
+pip install seaborn
+pip install mlxtend
+pip install --upgrade scikit-learn
+pip install --upgrade threadpoolctl
+pip install sklearn
+pip instal scikit-learn
+pip install apyori
+pip install apriori
+
+
